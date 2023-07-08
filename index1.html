@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat1</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* เพิ่มสไตล์ CSS เพื่อเรียงลำดับแนวตั้งของส่วน form */
+        form {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: gray;
+            padding: 10px;
+          
+        }
+    
+        form input {
+            margin-right: 5px;
+            width: 85%; /* กำหนดความกว้างของกล่องข้อความ */
+            height: 40px; /* กำหนดความสูงของกล่องข้อความ */
+            border-radius: 30px;
+            font-size: 18px; /* กำหนดขนาดตัวอักษรของข้อความ */
+        }
+    
+        form input[type="submit"] {
+            background-color: pink;
+            width: 10%; /* กำหนดความกว้างของกล่องข้อความ */
+            height: 30px; /* กำหนดความสูงของกล่องข้อความ */ 
+            border-radius: 30px;
+            font-size: 15px; /* กำหนดขนาดตัวอักษรของข้อความ */       }
+    </style>
+    <script>
+        $(document).ready(function(){
+            var socket = io();
+    
+            socket.on('connect', function() {
+                socket.send('User has connected!');
+            });
+    
+            socket.on('message', function(data) {
+                if (data.startsWith('Chat1:')) {
+                    $('#messages').append('<p>' + data + '</p>');
+                } else {
+                    $('#messages').append('<p>Chat2: ' + data.substring(7) + '</p>');
+                }
+            });
+    
+            $('form').submit(function(event) {
+                var message = $('#message').val();
+                socket.send('Chat1: ' + message);
+                $('#message').val('').focus();
+                event.preventDefault();
+            });
+        });
+    </script>
+    
+    
+</head>
+<body>
+    <div class="w3-top">
+        <div class="w3-bar w3-gray w3-padding w3-card">
+          <a href="#home" class="w3-bar-item w3-button">Chat1</a>
+        </div>
+      </div>
+ 
+    
+    <div id="messages"></div>
+    <form>
+        <input id="message" type="text" autocomplete="off" placeholder="  คุยไรกัน...">
+        <input type="submit" value="Send">
+    </form>
+</body>
+</html>
